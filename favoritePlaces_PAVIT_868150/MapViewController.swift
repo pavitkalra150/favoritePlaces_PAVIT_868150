@@ -17,6 +17,7 @@ class MapViewController: UIViewController, UISearchBarDelegate, CLLocationManage
     var selectedAnnotation: MKPointAnnotation?
     let searchController = UISearchController(searchResultsController: nil)
     var locationManager = CLLocationManager()
+    var selectedAddress: String?
     override func viewDidLoad() {
         super.viewDidLoad()
         showSearchBar()
@@ -25,7 +26,9 @@ class MapViewController: UIViewController, UISearchBarDelegate, CLLocationManage
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
-        
+        if let address = selectedAddress {
+                    searchForLocation(address: address)
+                }
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
         map.addGestureRecognizer(longPressGesture)
@@ -33,7 +36,21 @@ class MapViewController: UIViewController, UISearchBarDelegate, CLLocationManage
         map.delegate = self
         map.isZoomEnabled = false
     }
-    
+    func searchForLocation(address: String) {
+            let geocoder = CLGeocoder()
+            geocoder.geocodeAddressString(address) { (placemarks, error) in
+                if error != nil {
+                    print(error!)
+                } else {
+                    if let placemark = placemarks?[0] {
+                        let annotation = MKPointAnnotation()
+                        annotation.coordinate = placemark.location!.coordinate
+                        annotation.title = address
+                        self.map.addAnnotation(annotation)
+                    }
+                }
+            }
+        }
     
     func showSearchBar() {
         searchController.searchBar.delegate = self
@@ -109,6 +126,7 @@ class MapViewController: UIViewController, UISearchBarDelegate, CLLocationManage
                 if let placemark = placemarks?[0] {
                     annotation.title = placemark.name
                     self.map.addAnnotation(annotation)
+                    //self.addresses.append(annotation.title ?? "")
                 }
             }
         }
@@ -169,7 +187,7 @@ extension MapViewController: MKMapViewDelegate {
             let saveAction = UIAlertAction(title: "Save", style: .default) { [weak self] _ in
                 let address = self?.getAddress(for: view.annotation!.coordinate)
                 // Save the address to UserDefaults
-                UserDefaults.standard.set(address, forKey: "favorite_address")
+                UserDefaults.standard.set(address, forKey: "addresses")
                 guard let selectedAnnotation = self?.selectedAnnotation else { return }
                 self?.delegate?.didSelectAnnotation(title: selectedAnnotation.title ?? "My favorite address")
                 self?.navigationController?.popViewController(animated: true)
