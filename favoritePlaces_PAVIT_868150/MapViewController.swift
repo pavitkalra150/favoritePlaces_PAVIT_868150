@@ -8,11 +8,11 @@
 import UIKit
 import MapKit
 import CoreLocation
-//protocol MapViewControllerDelegate: AnyObject {
-//    func didSelectAddress(address: String)
-//}
-class MapViewController: UIViewController, UISearchBarDelegate, CLLocationManagerDelegate  {
-    //weak var delegate: MapViewControllerDelegate?
+protocol MapViewControllerDelegate: AnyObject {
+    func didSelectAnnotation(title: String)
+}
+class MapViewController: UIViewController, UISearchBarDelegate, CLLocationManagerDelegate{
+    weak var delegate: MapViewControllerDelegate?
     @IBOutlet weak var map: MKMapView!
     var selectedAnnotation: MKPointAnnotation?
     let searchController = UISearchController(searchResultsController: nil)
@@ -161,18 +161,25 @@ extension MapViewController: MKMapViewDelegate {
         }
         
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-                guard view.annotation is MKPointAnnotation else { return }
-                let alert = UIAlertController(title: "Save as Favorite?", message: "Would you like to save this location as a favorite?", preferredStyle: .alert)
-                let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
-                    let address = self.getAddress(for: view.annotation!.coordinate)
-                        // Save the address to UserDefaults
-                        UserDefaults.standard.set(address, forKey: "favorite_address")
-                }
-                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-                alert.addAction(saveAction)
-                alert.addAction(cancelAction)
-                present(alert, animated: true, completion: nil)
+        if control == view.rightCalloutAccessoryView {
+            let alert = UIAlertController(title: "Add to favorites", message: "Do you want to add this location to your favorites?", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            alert.addAction(cancelAction)
+            self.selectedAnnotation = view.annotation as? MKPointAnnotation
+            let saveAction = UIAlertAction(title: "Save", style: .default) { [weak self] _ in
+                let address = self?.getAddress(for: view.annotation!.coordinate)
+                // Save the address to UserDefaults
+                UserDefaults.standard.set(address, forKey: "favorite_address")
+                guard let selectedAnnotation = self?.selectedAnnotation else { return }
+                self?.delegate?.didSelectAnnotation(title: selectedAnnotation.title ?? "My favorite address")
+                self?.navigationController?.popViewController(animated: true)
             }
+            // Add the save action to the alert controller
+            alert.addAction(saveAction)
+            // Present the alert controller
+            present(alert, animated: true, completion: nil)
+        }
+    }
     func getAddress(for location: CLLocationCoordinate2D) -> String? {
         let geocoder = CLGeocoder()
         var address: String?

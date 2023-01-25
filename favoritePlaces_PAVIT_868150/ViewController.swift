@@ -7,12 +7,13 @@
 
 import UIKit
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource{
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,MapViewControllerDelegate {
+    
     var addresses = [String]()
-    func didSelectAddress(address: String) {
-            addresses.append(address)
+    func didSelectAnnotation(title: String) {
+            addresses.append(title)
             tableView.reloadData()
-    }
+        }
     
     
 
@@ -25,7 +26,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         tableView.delegate = self
             tableView.dataSource = self
     }
+    override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
 
+            // Retrieve the saved address from UserDefaults
+            if let address = UserDefaults.standard.string(forKey: "favorite_address") {
+                // Add the address to the data source for the table view
+                addresses.append(address)
+                // Reload the table view to display the new address
+                tableView.reloadData()
+            }
+        }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return addresses.count
@@ -33,14 +44,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-            cell.textLabel?.text = addresses[indexPath.row]
-            return cell
+                cell.textLabel?.text = addresses[indexPath.row]
+                return cell
     }
 
     
     @IBAction func AddButtonTapped(_ sender: UIBarButtonItem) {
         
         let secondViewController = self.storyboard!.instantiateViewController(withIdentifier: "MapVC") as! MapViewController
+        secondViewController.delegate = self
         self.navigationController?.pushViewController(secondViewController, animated: true)
     }
     
