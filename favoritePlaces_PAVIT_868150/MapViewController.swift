@@ -29,13 +29,17 @@ class MapViewController: UIViewController, UISearchBarDelegate, CLLocationManage
         if let address = selectedAddress {
                     searchForLocation(address: address)
                 }
-//        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
-//        mapView.addGestureRecognizer(panGesture)
+    
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
         map.addGestureRecognizer(longPressGesture)
         
         map.delegate = self
         map.isZoomEnabled = false
+        
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
+        panGesture.cancelsTouchesInView = false
+        map.addGestureRecognizer(panGesture)
     }
     func searchForLocation(address: String) {
             let geocoder = CLGeocoder()
@@ -52,8 +56,24 @@ class MapViewController: UIViewController, UISearchBarDelegate, CLLocationManage
                 }
             }
         }
-    
-    func showSearchBar() {
+    @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {
+        if let annotation = selectedAnnotation {
+            switch gesture.state {
+            case .began:
+                map.removeAnnotation(annotation)
+            case .changed:
+                let translation = gesture.translation(in: map)
+                annotation.coordinate.latitude += translation.y / map.region.span.latitudeDelta
+                annotation.coordinate.longitude += translation.x / map.region.span.longitudeDelta
+                gesture.setTranslation(.zero, in: map)
+            case .ended:
+                map.addAnnotation(annotation)
+            default:
+                break
+            }
+        }
+    }
+func showSearchBar() {
         searchController.searchBar.delegate = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search Location"
@@ -189,13 +209,21 @@ extension MapViewController: MKMapViewDelegate {
                 // Save the address to UserDefaults
                 UserDefaults.standard.set(address, forKey: "favorite_addresses")
                 guard let selectedAnnotation = self?.selectedAnnotation else { return }
-                self?.delegate?.didSelectAnnotation(title: selectedAnnotation.title ?? "My favorite address")
+                if selectedAnnotation != nil {
+                    self?.delegate?.didSelectAnnotation(title: selectedAnnotation.title ?? "My favorite address")
+                }
+//                self?.delegate?.didSelectAnnotation(title: selectedAnnotation.title ?? "My favorite address")
                 self?.navigationController?.popViewController(animated: true)
             }
             // Add the save action to the alert controller
             alert.addAction(saveAction)
             // Present the alert controller
             present(alert, animated: true, completion: nil)
+        }
+    }
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        if let annotation = view.annotation {
+            selectedAnnotation = annotation as? MKPointAnnotation
         }
     }
     func getAddress(for location: CLLocationCoordinate2D) -> String? {
