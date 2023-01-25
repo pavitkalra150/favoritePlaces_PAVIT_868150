@@ -14,6 +14,8 @@
 		333721A429809BEE0017DC64 /* favoritePlaces_PAVIT_868150.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 333721A229809BEE0017DC64 /* favoritePlaces_PAVIT_868150.xcdatamodeld */; };
 		333721A629809BF00017DC64 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 333721A529809BF00017DC64 /* Assets.xcassets */; };
 		333721A929809BF00017DC64 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 333721A729809BF00017DC64 /* LaunchScreen.storyboard */; };
+		333721B129809DB90017DC64 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333721B029809DB90017DC64 /* MapViewController.swift */; };
+		333721B329809EBE0017DC64 /* PlacesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333721B229809EBE0017DC64 /* PlacesTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		333721A529809BF00017DC64 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		333721A829809BF00017DC64 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		333721AA29809BF00017DC64 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		333721B029809DB90017DC64 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		333721B229809EBE0017DC64 /* PlacesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +70,8 @@
 				333721A729809BF00017DC64 /* LaunchScreen.storyboard */,
 				333721AA29809BF00017DC64 /* Info.plist */,
 				333721A229809BEE0017DC64 /* favoritePlaces_PAVIT_868150.xcdatamodeld */,
+				333721B029809DB90017DC64 /* MapViewController.swift */,
+				333721B229809EBE0017DC64 /* PlacesTableViewCell.swift */,
 			);
 			path = favoritePlaces_PAVIT_868150;
 			sourceTree = "<group>";
@@ -144,7 +150,9 @@
 				3337219E29809BEE0017DC64 /* ViewController.swift in Sources */,
 				3337219A29809BEE0017DC64 /* AppDelegate.swift in Sources */,
 				333721A429809BEE0017DC64 /* favoritePlaces_PAVIT_868150.xcdatamodeld in Sources */,
+				333721B129809DB90017DC64 /* MapViewController.swift in Sources */,
 				3337219C29809BEE0017DC64 /* SceneDelegate.swift in Sources */,
+				333721B329809EBE0017DC64 /* PlacesTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
