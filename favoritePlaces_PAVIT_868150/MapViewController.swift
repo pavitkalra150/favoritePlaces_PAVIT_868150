@@ -29,7 +29,8 @@ class MapViewController: UIViewController, UISearchBarDelegate, CLLocationManage
         if let address = selectedAddress {
                     searchForLocation(address: address)
                 }
-        
+//        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
+//        mapView.addGestureRecognizer(panGesture)
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
         map.addGestureRecognizer(longPressGesture)
         
@@ -60,7 +61,6 @@ class MapViewController: UIViewController, UISearchBarDelegate, CLLocationManage
         definesPresentationContext = true
         searchController.searchBar.searchTextField.textColor = .lightGray
     }
-    
     
     @IBAction func zoomIn(_ sender: UIButton) {
         let currentRegion = map.region
@@ -187,7 +187,7 @@ extension MapViewController: MKMapViewDelegate {
             let saveAction = UIAlertAction(title: "Save", style: .default) { [weak self] _ in
                 let address = self?.getAddress(for: view.annotation!.coordinate)
                 // Save the address to UserDefaults
-                UserDefaults.standard.set(address, forKey: "addresses")
+                UserDefaults.standard.set(address, forKey: "favorite_addresses")
                 guard let selectedAnnotation = self?.selectedAnnotation else { return }
                 self?.delegate?.didSelectAnnotation(title: selectedAnnotation.title ?? "My favorite address")
                 self?.navigationController?.popViewController(animated: true)

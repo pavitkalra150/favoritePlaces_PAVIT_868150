@@ -24,28 +24,29 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         tableView.delegate = self
-            tableView.dataSource = self
-        if let addresses = UserDefaults.standard.array(forKey: "addresses") as? [String] {
-                self.addresses = addresses
-            }
-            tableView.reloadData()
+        tableView.dataSource = self
     }
+    
     override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
 
             // Retrieve the saved address from UserDefaults
-                if let address = UserDefaults.standard.string(forKey: "addresses") {
-                // Add the address to the data source for the table view
-                addresses.append(address)
-                // Reload the table view to display the new address
-                tableView.reloadData()
-            }
+        if let addresses = UserDefaults.standard.array(forKey: "favorite_addresses") as? [String] {
+            self.addresses = addresses
         }
+        tableView.reloadData()
+        }
+    
+    
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        UserDefaults.standard.set(addresses, forKey: "addresses")
+        
+        UserDefaults.standard.set(addresses, forKey: "favorite_addresses")
         UserDefaults.standard.synchronize()
+        
+        super.viewWillDisappear(animated)
     }
+    
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return addresses.count
     }
